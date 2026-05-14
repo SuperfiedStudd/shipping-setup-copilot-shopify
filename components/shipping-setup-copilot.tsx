@@ -15,6 +15,7 @@ import {
 
 import {
   blockerSequence,
+  diagnoseFields,
   defaultState,
   phaseRail,
   presetOrder,
@@ -164,32 +165,18 @@ export function ShippingSetupCopilot() {
   );
 
   const promptResponse = useMemo(() => {
-    if (state.selectedPrompt === "fragile-home") {
+    if (state.selectedPrompt === "review-package-details") {
       return {
-        title: "Start with one protected package and a clear promise.",
-        body: `For ${selectedPreset.label.toLowerCase()}, Shopify can start with ${selectedPreset.defaults.package.toLowerCase()} and ${selectedPreset.defaults.handling.toLowerCase()}.`,
-      };
-    }
-
-    if (state.selectedPrompt === "missing-weight") {
-      return {
-        title: "Fix the best sellers first.",
-        body: "Shopify can flag products with no weight saved. Start with the items that sell most.",
-      };
-    }
-
-    if (state.selectedPrompt === "default-package") {
-      return {
-        title: "Use one starter package first.",
-        body: `For ${selectedPreset.label.toLowerCase()}, Shopify can suggest ${selectedPreset.defaults.package.toLowerCase()}. That gives checkout a steadier starting point.`,
+        title: "Review missing package details.",
+        body: "Product weight, package size, and fulfillment timing are still incomplete on 2 best sellers.",
       };
     }
 
     return {
-      title: "Run two quick rate checks.",
-      body: `Test one small order and one bulky order. The next guided step is: ${currentBlocker.status.toLowerCase()}`,
+      title: "Check default rate before launch.",
+      body: `Test one small cart and one bulky cart before approving the ${selectedPreset.label.toLowerCase()} default.`,
     };
-  }, [currentBlocker.status, selectedPreset, state.selectedPrompt]);
+  }, [selectedPreset, state.selectedPrompt]);
 
   const resetDemo = () => {
     if (typeof window !== "undefined") {
@@ -279,7 +266,7 @@ export function ShippingSetupCopilot() {
               <div className="rounded-[14px] border border-line bg-[#f8faf8] px-4 py-3">
                 <p className="text-sm font-medium text-ink">Shopify APM prototype</p>
                 <p className="mt-1 text-sm leading-6 text-mutedInk">
-                  One screen that turns missing shipping details into a guided next step.
+                  One screen that keeps incomplete shipping setup moving toward merchant approval.
                 </p>
               </div>
             </div>
@@ -360,7 +347,7 @@ export function ShippingSetupCopilot() {
                 Bring the next shipping step into admin.
               </h1>
               <p className="max-w-[42ch] text-sm leading-5 text-mutedInk">
-                One blocker, one suggested next step, and one faster path to safer rates.
+                One blocker, one simpler decision, and one faster path to safer checkout rates.
               </p>
             </div>
 
@@ -412,9 +399,42 @@ export function ShippingSetupCopilot() {
                   </div>
                 </div>
 
+                {state.activeStep === "diagnose" ? (
+                  <div className="mt-3 rounded-[16px] border border-line bg-[#f8faf8] p-3.5">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-mutedInk">
+                          Quick edit
+                        </p>
+                        <p className="mt-1 text-sm leading-5 text-ink">
+                          Add the missing shipping details without leaving admin.
+                        </p>
+                      </div>
+                      <div className="rounded-full border border-line bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-accentStrong">
+                        Needs review
+                      </div>
+                    </div>
+
+                    <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                      {diagnoseFields.map((field) => (
+                        <label key={field.label} className="space-y-1">
+                          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-mutedInk">
+                            {field.label}
+                          </span>
+                          <input
+                            defaultValue={field.value}
+                            className="w-full rounded-[12px] border border-line bg-white px-3 py-2 text-sm text-ink outline-none"
+                            type="text"
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3">
                   <p className="text-sm leading-6 text-mutedInk">
-                    Shopify surfaces the next shipping detail right where the merchant is already working.
+                    Shopify keeps the next shipping decision visible right where the merchant is already working.
                   </p>
                   <Button data-testid="next-detail-button" onClick={advanceDemo}>
                     {currentBlocker.actionLabel}
@@ -427,13 +447,13 @@ export function ShippingSetupCopilot() {
             <div className="rounded-[18px] border border-line bg-[#f8faf8] p-3.5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-medium text-ink">Sidekick-style help</p>
+                  <p className="text-sm font-medium text-ink">Daily setup nudge</p>
                   <p className="mt-1 max-w-[42ch] text-sm leading-6 text-mutedInk">
-                    Quick prompts help the merchant ask for the next shipping decision in plain language.
+                    You still have 2 shipping details to confirm.
                   </p>
                 </div>
                 <div className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-mutedInk">
-                  Prompt help
+                  In admin
                 </div>
               </div>
 
@@ -471,11 +491,14 @@ export function ShippingSetupCopilot() {
                 className="mt-3 rounded-[16px] border border-line bg-white p-3.5"
               >
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-mutedInk">
-                  Suggested reply
+                  Next reminder
                 </p>
                 <p className="mt-2 text-sm font-medium text-ink">{promptResponse.title}</p>
                 <p className="mt-1 max-w-[40ch] text-sm leading-5 text-mutedInk">
                   {promptResponse.body}
+                </p>
+                <p className="mt-3 text-sm leading-5 text-mutedInk">
+                  Shopify can keep surfacing unfinished shipping setup in admin until the merchant signs off.
                 </p>
               </div>
             </div>
@@ -493,35 +516,49 @@ export function ShippingSetupCopilot() {
                 Start from a safer shipping default.
               </h2>
               <p className="max-w-[30ch] text-sm leading-5 text-mutedInk">
-                Package, handling, and rate suggestions adapt by business type before the merchant approves.
+                Shopify narrows package, handling, and rate decisions from the store signals it already has.
               </p>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="space-y-2" role="radiogroup" aria-label="Safer default options">
               {presets.map((preset) => {
                 const active = preset.id === state.selectedPreset;
 
                 return (
-                  <button
+                  <label
                     key={preset.id}
                     data-testid={`preset-${preset.id}`}
-                    type="button"
-                    onClick={() =>
-                      setState((current) => ({
-                        ...current,
-                        selectedPreset: preset.id,
-                      }))
-                    }
                     className={cn(
-                      "rounded-[14px] border px-4 py-4 text-left transition-colors",
+                      "flex cursor-pointer items-start gap-3 rounded-[14px] border px-4 py-4 transition-colors",
                       active
                         ? "border-accent bg-accentSoft"
                         : "border-line bg-[#f8faf8] hover:border-[#bfd2c5] hover:bg-white"
                     )}
-                    >
-                      <p className="text-sm font-medium text-ink">{preset.label}</p>
-                    <p className="mt-2 text-sm leading-5 text-mutedInk">{preset.summary}</p>
-                    </button>
+                  >
+                    <input
+                      checked={active}
+                      className="mt-1 h-4 w-4 accent-[#315f51]"
+                      name="safer-default"
+                      onChange={() =>
+                        setState((current) => ({
+                          ...current,
+                          selectedPreset: preset.id,
+                        }))
+                      }
+                      type="radio"
+                    />
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <p className="text-sm font-medium text-ink">{preset.label}</p>
+                        {active ? (
+                          <span className="rounded-full border border-white/80 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-accentStrong">
+                            Selected
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="mt-2 text-sm leading-5 text-mutedInk">{preset.summary}</p>
+                    </div>
+                  </label>
                 );
               })}
             </div>
@@ -610,7 +647,7 @@ export function ShippingSetupCopilot() {
               </div>
 
               <p className="mt-3 max-w-[30ch] text-sm leading-5 text-mutedInk">
-                Shopify uses the store signals it already has, then leaves the final shipping decision with the merchant.
+                Shopify uses the available store signals to recommend a safer starting point, then waits for merchant approval before final changes.
               </p>
             </div>
           </aside>

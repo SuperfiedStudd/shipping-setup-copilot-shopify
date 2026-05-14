@@ -1,12 +1,13 @@
 export type StepId = "diagnose" | "recommend" | "configure" | "resume";
 
 export type PromptId =
-  | "fragile-home"
-  | "missing-weight"
-  | "default-package"
-  | "safe-rates";
+  | "review-package-details"
+  | "check-default-rate";
 
-export type PresetId = "home-decor" | "apparel" | "food" | "furniture";
+export type PresetId =
+  | "small-soft-goods"
+  | "fragile-home-decor"
+  | "heavy-furniture";
 
 export type DemoState = {
   activeStep: StepId;
@@ -20,19 +21,21 @@ export const storageKey = "shipping-setup-copilot-single-screen-state";
 export const stepOrder: StepId[] = ["diagnose", "recommend", "configure", "resume"];
 
 export const promptOrder: PromptId[] = [
-  "fragile-home",
-  "missing-weight",
-  "default-package",
-  "safe-rates",
+  "review-package-details",
+  "check-default-rate",
 ];
 
-export const presetOrder: PresetId[] = ["home-decor", "apparel", "food", "furniture"];
+export const presetOrder: PresetId[] = [
+  "small-soft-goods",
+  "fragile-home-decor",
+  "heavy-furniture",
+];
 
 export const defaultState: DemoState = {
   activeStep: "diagnose",
   blockerIndex: 0,
-  selectedPrompt: "fragile-home",
-  selectedPreset: "home-decor",
+  selectedPrompt: "review-package-details",
+  selectedPreset: "fragile-home-decor",
 };
 
 export const storyRail = [
@@ -42,11 +45,11 @@ export const storyRail = [
   },
   {
     label: "Solution",
-    text: "Shopify brings the next missing shipping step into admin and gives the merchant a safer starting point.",
+    text: "Shopify keeps incomplete shipping setup visible inside admin and narrows the next shipping decision.",
   },
   {
     label: "Why it works",
-    text: "The merchant stays in control. Shopify suggests the next best setup step, but the merchant approves before anything changes.",
+    text: "Shopify recommends safer defaults, keeps testing focused, and waits for merchant approval before anything changes.",
   },
 ] as const;
 
@@ -54,22 +57,22 @@ export const phaseRail = [
   {
     id: "diagnose" as const,
     label: "Diagnose",
-    summary: "Find the missing detail.",
+    summary: "Add missing setup details.",
   },
   {
     id: "recommend" as const,
     label: "Recommend",
-    summary: "Show a safer first guess.",
+    summary: "Choose a safer default.",
   },
   {
     id: "configure" as const,
     label: "Configure",
-    summary: "Check one setup action.",
+    summary: "Test checkout scenarios.",
   },
   {
     id: "resume" as const,
     label: "Resume",
-    summary: "Save the next step in admin.",
+    summary: "Approve final settings.",
   },
 ] as const;
 
@@ -77,57 +80,64 @@ export const blockerSequence = [
   {
     step: "diagnose" as const,
     eyebrow: "Diagnose setup gaps",
-    headline: "Checkout rates are still guessing",
-    detail: "Weight and package details are missing on 2 best sellers.",
-    helper: "Fix the missing shipping details first so checkout can price with more confidence.",
+    headline: "Incomplete shipping details are still live",
+    detail: "2 best sellers still need product weight, package size, and fulfillment timing.",
+    helper: "Shopify keeps the missing setup work visible in admin so the merchant can fill in the next shipping detail fast.",
     actionLabel: "Fix next detail",
-    status: "Add weight and package size for the top sellers.",
+    status: "Add weight, package size, and fulfillment time.",
   },
   {
     step: "recommend" as const,
     eyebrow: "Suggested next step",
-    headline: "Use a safer default package",
-    detail: "One starter box can cover the most common order.",
-    helper: "Shopify suggests a stronger starting point from the catalog and the store's order shape.",
+    headline: "Choose a safer default package",
+    detail: "Shopify can suggest a starting package, handling plan, and rate fallback from store signals.",
+    helper: "Use product descriptions, category, store location, fulfillment location, past order sizes, and markets served to narrow the choice.",
     actionLabel: "Use safer default",
-    status: "Review the suggested starter package.",
+    status: "Pick the default that best matches the catalog.",
   },
   {
     step: "configure" as const,
     eyebrow: "Fix next detail",
-    headline: "Run one fast rate check",
-    detail: "Test one small cart and one bulky cart.",
-    helper: "A quick rate check catches the broad defaults that usually slip through before launch.",
+    headline: "Test the rates before launch",
+    detail: "Run one small-cart check and one bulky-cart check before the merchant approves the setup.",
+    helper: "A simpler test view keeps the next rate decision focused and catches defaults that would overcharge or undercharge at checkout.",
     actionLabel: "Run rate check",
-    status: "Compare one small cart and one bulky cart.",
+    status: "Compare a small cart and a bulky cart.",
   },
   {
     step: "resume" as const,
     eyebrow: "Merchant approval",
-    headline: "Ready for final review",
-    detail: "The suggested shipping setup is ready for merchant approval.",
-    helper: "Shopify keeps the next setup step visible, and the merchant decides when to apply it.",
+    headline: "Ready for merchant approval",
+    detail: "The safer default and final rate checks are ready for review inside admin.",
+    helper: "Shopify keeps unfinished shipping setup visible until the merchant confirms the last change.",
     actionLabel: "Start over",
-    status: "Approve the suggested shipping settings.",
+    status: "Approve the final shipping settings.",
   },
 ] as const;
 
 export const promptChips = [
   {
-    id: "fragile-home" as const,
-    label: "Help me set shipping for fragile home decor",
+    id: "review-package-details" as const,
+    label: "Review missing package details",
   },
   {
-    id: "missing-weight" as const,
-    label: "Find products missing weight",
+    id: "check-default-rate" as const,
+    label: "Check default rate before launch",
+  },
+] as const;
+
+export const diagnoseFields = [
+  {
+    label: "Product weight",
+    value: "0.8 lb",
   },
   {
-    id: "default-package" as const,
-    label: "Suggest a default package",
+    label: "Package size",
+    value: "12 x 10 x 4 in",
   },
   {
-    id: "safe-rates" as const,
-    label: "Check if my checkout rates look safe",
+    label: "Fulfillment time",
+    value: "1-2 business days",
   },
 ] as const;
 
@@ -142,51 +152,39 @@ export const storeSignals = [
 
 export const presets = [
   {
-    id: "home-decor" as const,
-    label: "Home decor",
-    summary: "Fragile items.",
+    id: "small-soft-goods" as const,
+    label: "Small soft goods",
+    summary: "Poly mailer, standard handling, backup flat rate.",
     defaults: {
-      package: "16 x 12 x 8 padded box",
+      package: "Poly mailer",
+      handling: "Standard handling",
+      rates: "Backup flat rate",
+      focus: "Check tees, socks, and one-item orders",
+    },
+    note: "A lighter default for low-risk orders that still need a fallback rate.",
+  },
+  {
+    id: "fragile-home-decor" as const,
+    label: "Fragile home decor",
+    summary: "Padded box, 2 day handling, bulky fallback.",
+    defaults: {
+      package: "Padded box",
       handling: "2 day handling",
-      rates: "Live rates with a bulky fallback",
-      focus: "Check planters and mirrors first",
+      rates: "Bulky fallback",
+      focus: "Check mirrors, planters, and mixed carts",
     },
-    note: "Padded packaging and a bulky fallback for fragile shipments.",
+    note: "A safer starting point for breakable items with more shipping risk.",
   },
   {
-    id: "apparel" as const,
-    label: "Apparel",
-    summary: "Soft goods.",
+    id: "heavy-furniture" as const,
+    label: "Heavy furniture",
+    summary: "Oversized package, freight review, manual approval.",
     defaults: {
-      package: "Mailer bag plus one small box",
-      handling: "1 day handling",
-      rates: "Flat fallback for low-cost orders",
-      focus: "Check tees, hoodies, and bundles",
+      package: "Oversized package",
+      handling: "Freight review",
+      rates: "Manual approval",
+      focus: "Check tables, frames, and oversized deliveries",
     },
-    note: "Fast handling and flexible packaging for soft goods.",
-  },
-  {
-    id: "food" as const,
-    label: "Food / perishables",
-    summary: "Cold packs.",
-    defaults: {
-      package: "Cold pack box with liner",
-      handling: "Same day handling",
-      rates: "Express-heavy rate mix",
-      focus: "Check local and two-day zones",
-    },
-    note: "Cold-pack defaults tuned for freshness and speed.",
-  },
-  {
-    id: "furniture" as const,
-    label: "Large furniture",
-    summary: "Oversized items.",
-    defaults: {
-      package: "Oversized parcel plus freight review",
-      handling: "3 day handling",
-      rates: "Manual oversized fallback",
-      focus: "Check tables, frames, and sets",
-    },
-    note: "Oversized handling with a safer fallback for large deliveries.",
+    note: "A controlled default for large items that need a final merchant check.",
   },
 ] as const;
