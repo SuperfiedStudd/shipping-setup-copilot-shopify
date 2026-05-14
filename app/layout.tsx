@@ -6,11 +6,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Shipping Setup Copilot | Shopify APM Take-Home Prototype",
   description:
-    "A single-screen Shopify shipping rescue flow prototype that unifies existing shipping capabilities into one visible, guided, resumable setup surface.",
+    "A single-screen Shopify shipping prototype that surfaces setup gaps, suggests safer defaults, and keeps the merchant in control before rates go live.",
   openGraph: {
     title: "Shipping Setup Copilot | Shopify APM Take-Home Prototype",
     description:
-      "A single-screen shipping-specific rescue flow for surfacing hidden blockers, recommending safer defaults, proving rates, and resurfacing setup until the merchant approves final settings.",
+      "A single-screen Shopify shipping prototype that brings the next missing setup step into admin and gives merchants a safer starting point.",
     type: "website",
   },
 };

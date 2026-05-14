@@ -38,15 +38,15 @@ export const defaultState: DemoState = {
 export const storyRail = [
   {
     label: "Problem",
-    text: "Shipping can go live before weight, size, and box details are ready. Then checkout starts guessing.",
+    text: "Merchants can go live before weight, package, and rate details are ready. Then checkout rates start guessing.",
   },
   {
     label: "Solution",
-    text: "Shopify brings the next missing setup step to the merchant inside admin.",
+    text: "Shopify brings the next missing shipping step into admin and gives the merchant a safer starting point.",
   },
   {
     label: "Why it works",
-    text: "Shopify gives a safer first guess. The merchant still says yes before anything is final.",
+    text: "The merchant stays in control. Shopify suggests the next best setup step, but the merchant approves before anything changes.",
   },
 ] as const;
 
@@ -76,39 +76,39 @@ export const phaseRail = [
 export const blockerSequence = [
   {
     step: "diagnose" as const,
-    eyebrow: "Shopify admin guidance",
-    headline: "Shipping rates may be wrong",
-    detail: "2 product details are missing.",
-    helper: "Shopify brings the next missing step to the merchant.",
+    eyebrow: "Diagnose setup gaps",
+    headline: "Checkout rates are still guessing",
+    detail: "Weight and package details are missing on 2 best sellers.",
+    helper: "Fix the missing shipping details first so checkout can price with more confidence.",
     actionLabel: "Fix next detail",
-    status: "Start with product weight and size.",
+    status: "Add weight and package size for the top sellers.",
   },
   {
     step: "recommend" as const,
-    eyebrow: "Safer first guess",
-    headline: "Shopify found a better default package",
+    eyebrow: "Suggested next step",
+    headline: "Use a safer default package",
     detail: "One starter box can cover the most common order.",
-    helper: "This is a starting point, not a final rule.",
-    actionLabel: "Use this guess",
-    status: "The store keeps full approval.",
+    helper: "Shopify suggests a stronger starting point from the catalog and the store's order shape.",
+    actionLabel: "Use safer default",
+    status: "Review the suggested starter package.",
   },
   {
     step: "configure" as const,
-    eyebrow: "Quick check",
-    headline: "One rate check is left",
+    eyebrow: "Fix next detail",
+    headline: "Run one fast rate check",
     detail: "Test one small cart and one bulky cart.",
-    helper: "This helps catch a bad broad default before launch.",
-    actionLabel: "Check next detail",
-    status: "Keep the proof short and clear.",
+    helper: "A quick rate check catches the broad defaults that usually slip through before launch.",
+    actionLabel: "Run rate check",
+    status: "Compare one small cart and one bulky cart.",
   },
   {
     step: "resume" as const,
-    eyebrow: "Saved in admin",
-    headline: "The next step can wait",
-    detail: "Shopify saves the next fix and brings it back later.",
-    helper: "Helpful guidance stays in admin instead of turning into popups.",
+    eyebrow: "Merchant approval",
+    headline: "Ready for final review",
+    detail: "The suggested shipping setup is ready for merchant approval.",
+    helper: "Shopify keeps the next setup step visible, and the merchant decides when to apply it.",
     actionLabel: "Start over",
-    status: "Reset returns to the first blocker.",
+    status: "Approve the suggested shipping settings.",
   },
 ] as const;
 
@@ -151,7 +151,7 @@ export const presets = [
       rates: "Live rates with a bulky fallback",
       focus: "Check planters and mirrors first",
     },
-    note: "Good first guess for breakable items.",
+    note: "Padded packaging and a bulky fallback for fragile shipments.",
   },
   {
     id: "apparel" as const,
@@ -163,7 +163,7 @@ export const presets = [
       rates: "Flat fallback for low-cost orders",
       focus: "Check tees, hoodies, and bundles",
     },
-    note: "Good first guess for fast-moving clothes.",
+    note: "Fast handling and flexible packaging for soft goods.",
   },
   {
     id: "food" as const,
@@ -175,7 +175,7 @@ export const presets = [
       rates: "Express-heavy rate mix",
       focus: "Check local and two-day zones",
     },
-    note: "Good first guess when freshness matters.",
+    note: "Cold-pack defaults tuned for freshness and speed.",
   },
   {
     id: "furniture" as const,
@@ -187,6 +187,6 @@ export const presets = [
       rates: "Manual oversized fallback",
       focus: "Check tables, frames, and sets",
     },
-    note: "Good first guess for bulky items.",
+    note: "Oversized handling with a safer fallback for large deliveries.",
   },
 ] as const;

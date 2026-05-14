@@ -166,7 +166,7 @@ export function ShippingSetupCopilot() {
   const promptResponse = useMemo(() => {
     if (state.selectedPrompt === "fragile-home") {
       return {
-        title: "Start with one safe box and one clear promise.",
+        title: "Start with one protected package and a clear promise.",
         body: `For ${selectedPreset.label.toLowerCase()}, Shopify can start with ${selectedPreset.defaults.package.toLowerCase()} and ${selectedPreset.defaults.handling.toLowerCase()}.`,
       };
     }
@@ -181,12 +181,12 @@ export function ShippingSetupCopilot() {
     if (state.selectedPrompt === "default-package") {
       return {
         title: "Use one starter package first.",
-        body: `For ${selectedPreset.label.toLowerCase()}, Shopify would suggest ${selectedPreset.defaults.package.toLowerCase()}. That gives checkout a steadier first guess.`,
+        body: `For ${selectedPreset.label.toLowerCase()}, Shopify can suggest ${selectedPreset.defaults.package.toLowerCase()}. That gives checkout a steadier starting point.`,
       };
     }
 
     return {
-      title: "Run two simple rate checks.",
+      title: "Run two quick rate checks.",
       body: `Test one small order and one bulky order. The next guided step is: ${currentBlocker.status.toLowerCase()}`,
     };
   }, [currentBlocker.status, selectedPreset, state.selectedPrompt]);
@@ -242,15 +242,12 @@ export function ShippingSetupCopilot() {
                   Shipping Setup Copilot
                 </p>
                 <p className="text-sm leading-6 text-mutedInk">
-                  A calmer one-screen demo for Shopify shipping help.
+                  Guided shipping setup for safer checkout rates.
                 </p>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-[#edf3ec] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-accentStrong">
-                Local mock data only
-              </span>
               <span className="rounded-full bg-[#f5f5f2] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#59665f]">
                 Single screen
               </span>
@@ -280,9 +277,9 @@ export function ShippingSetupCopilot() {
                 Two-minute story rail
               </p>
               <div className="rounded-[14px] border border-line bg-[#f8faf8] px-4 py-3">
-                <p className="text-sm font-medium text-ink">Built by Jasjyot Singh</p>
+                <p className="text-sm font-medium text-ink">Shopify APM prototype</p>
                 <p className="mt-1 text-sm leading-6 text-mutedInk">
-                  Shopify APM take-home prototype.
+                  One screen that turns missing shipping details into a guided next step.
                 </p>
               </div>
             </div>
@@ -296,56 +293,57 @@ export function ShippingSetupCopilot() {
                   <p className="max-w-[28ch] text-sm leading-6 text-mutedInk">{item.text}</p>
                 </article>
               ))}
-            </div>
-
-            <div className="mt-auto rounded-[16px] border border-line bg-[#f8faf8] p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-medium text-ink">Demo state</p>
-                  <p className="mt-1 text-sm leading-6 text-mutedInk">One screen. Four phases.</p>
+              <div className="rounded-[16px] border border-line bg-[#f8faf8] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium text-ink">Demo state</p>
+                    <p className="mt-1 text-sm leading-6 text-mutedInk">
+                      One screen. Four guided steps.
+                    </p>
+                  </div>
+                  <div className="rounded-[10px] border border-line bg-white px-3 py-2 text-sm font-medium text-ink">
+                    {phaseRail[currentStepIndex]?.label ?? "Diagnose"}
+                  </div>
                 </div>
-                <div className="rounded-[10px] border border-line bg-white px-3 py-2 text-sm font-medium text-ink">
-                  {phaseRail[currentStepIndex]?.label ?? "Diagnose"}
-                </div>
-              </div>
 
-              <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                {phaseRail.map((phase, index) => {
-                  const active = phase.id === state.activeStep;
-                  const complete = index < currentStepIndex;
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {phaseRail.map((phase, index) => {
+                    const active = phase.id === state.activeStep;
+                    const complete = index < currentStepIndex;
 
-                  return (
-                    <div
-                      key={phase.id}
-                      className={cn(
-                        "flex items-center gap-3 rounded-[12px] border px-3 py-2.5 transition-colors",
-                        active
-                          ? "border-accent bg-accentSoft"
-                          : "border-line bg-white"
-                      )}
-                    >
+                    return (
                       <div
+                        key={phase.id}
                         className={cn(
-                          "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold",
+                          "flex items-center gap-3 rounded-[12px] border px-3 py-2.5 transition-colors",
                           active
-                            ? "border-accent bg-white text-accentStrong"
-                            : complete
-                              ? "border-[#b7d3c3] bg-white text-accentStrong"
-                              : "border-line bg-[#f8faf8] text-mutedInk"
+                            ? "border-accent bg-accentSoft"
+                            : "border-line bg-white"
                         )}
                       >
-                        {complete ? (
-                          <CheckCircle className="h-4 w-4" weight="fill" />
-                        ) : (
-                          index + 1
-                        )}
+                        <div
+                          className={cn(
+                            "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold",
+                            active
+                              ? "border-accent bg-white text-accentStrong"
+                              : complete
+                                ? "border-[#b7d3c3] bg-white text-accentStrong"
+                                : "border-line bg-[#f8faf8] text-mutedInk"
+                          )}
+                        >
+                          {complete ? (
+                            <CheckCircle className="h-4 w-4" weight="fill" />
+                          ) : (
+                            index + 1
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-ink">{phase.label}</p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-ink">{phase.label}</p>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </aside>
@@ -356,13 +354,13 @@ export function ShippingSetupCopilot() {
           >
             <div className="space-y-2">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accentStrong">
-                Simplified setup rescue
+                Diagnose setup gaps
               </p>
               <h1 className="max-w-[18ch] balance-lines text-[clamp(1.2rem,1.7vw,1.55rem)] font-semibold tracking-[-0.05em] text-ink">
-                Helpful Shopify guidance, not a popup.
+                Bring the next shipping step into admin.
               </h1>
               <p className="max-w-[42ch] text-sm leading-5 text-mutedInk">
-                One blocker. One next action. One helper inside admin.
+                One blocker, one suggested next step, and one faster path to safer rates.
               </p>
             </div>
 
@@ -379,7 +377,7 @@ export function ShippingSetupCopilot() {
                   <div>
                     <p className="text-sm font-medium text-ink">Shopify admin</p>
                     <p className="text-[11px] uppercase tracking-[0.18em] text-mutedInk">
-                      Existing guidance
+                      Guided setup
                     </p>
                   </div>
                 </div>
@@ -406,7 +404,7 @@ export function ShippingSetupCopilot() {
 
                   <div className="rounded-[12px] border border-line bg-[#f8faf8] px-4 py-3">
                     <p className="text-[11px] uppercase tracking-[0.18em] text-mutedInk">
-                      Next detail
+                      Suggested next step
                     </p>
                     <p className="mt-2 max-w-[16ch] text-sm font-medium leading-5 text-ink">
                       {currentBlocker.status}
@@ -416,7 +414,7 @@ export function ShippingSetupCopilot() {
 
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3">
                   <p className="text-sm leading-6 text-mutedInk">
-                    This help stays inside Shopify admin. It does not open a new app.
+                    Shopify surfaces the next shipping detail right where the merchant is already working.
                   </p>
                   <Button data-testid="next-detail-button" onClick={advanceDemo}>
                     {currentBlocker.actionLabel}
@@ -431,11 +429,11 @@ export function ShippingSetupCopilot() {
                 <div>
                   <p className="text-sm font-medium text-ink">Sidekick-style help</p>
                   <p className="mt-1 max-w-[42ch] text-sm leading-6 text-mutedInk">
-                    Premade prompts show existing admin help. This is not a new AI app.
+                    Quick prompts help the merchant ask for the next shipping decision in plain language.
                   </p>
                 </div>
                 <div className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-mutedInk">
-                  Existing admin help
+                  Prompt help
                 </div>
               </div>
 
@@ -489,13 +487,13 @@ export function ShippingSetupCopilot() {
           >
             <div className="space-y-2">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accentStrong">
-                Better default settings
+                Safer default
               </p>
               <h2 className="max-w-[18ch] balance-lines text-[clamp(1.1rem,1.55vw,1.45rem)] font-semibold tracking-[-0.05em] text-ink">
-                Shopify guesses a safer starting point.
+                Start from a safer shipping default.
               </h2>
               <p className="max-w-[30ch] text-sm leading-5 text-mutedInk">
-                Then the merchant approves it. That reduces bad broad defaults.
+                Package, handling, and rate suggestions adapt by business type before the merchant approves.
               </p>
             </div>
 
@@ -530,7 +528,7 @@ export function ShippingSetupCopilot() {
 
             <div className="rounded-[16px] border border-line bg-[#f8faf8] p-3.5">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-mutedInk">
-                What the store already knows
+                What Shopify can use
               </p>
               <div className="mt-3 grid gap-x-4 gap-y-2 sm:grid-cols-2">
                 {storeSignals.map((signal) => (
@@ -550,7 +548,7 @@ export function ShippingSetupCopilot() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accentStrong">
-                    Suggested for {selectedPreset.label}
+                    Safer default for {selectedPreset.label}
                   </p>
                   <p className="mt-2 text-base font-medium tracking-[-0.03em] text-ink">
                     {selectedPreset.note}
@@ -612,7 +610,7 @@ export function ShippingSetupCopilot() {
               </div>
 
               <p className="mt-3 max-w-[30ch] text-sm leading-5 text-mutedInk">
-                Shopify guesses from what the store already knows. The merchant still approves it.
+                Shopify uses the store signals it already has, then leaves the final shipping decision with the merchant.
               </p>
             </div>
           </aside>
