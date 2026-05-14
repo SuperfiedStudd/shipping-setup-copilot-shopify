@@ -35,15 +35,15 @@ export const defaultState: PrototypeState = {
 export const storyRail = [
   {
     label: "Problem",
-    text: "Shopify already has shipping settings, profiles, carrier-calculated rates, backup rates, apps, and admin guidance. The real problem is that small merchants may not know which missing detail is blocking accurate checkout rates.",
+    text: "Shopify already has shipping settings, profiles, carrier-calculated rates, backup rates, apps, and admin guidance. The real problem is that small merchants may not know which missing detail across weights, dimensions, packages, carriers, fulfillment timing, markets, or rate strategy is blocking accurate checkout rates.",
   },
   {
     label: "Solution",
-    text: "This prototype reframes setup as a shipping-specific rescue flow inside Shopify admin. It unifies scattered pieces across product data, packages, shipping settings, markets, carrier setup, and guidance into one visible, guided, resumable surface.",
+    text: "This prototype reframes setup as a shipping-specific rescue flow inside Shopify admin. It pulls shipping settings, carrier or app setup, backup rates, packages, markets, and optional Sidekick-style guidance into one visible, guided, resumable surface.",
   },
   {
     label: "Why it works",
-    text: "Safer defaults, persistent nudges, and optional admin guidance help the merchant move forward without Shopify replacing merchant judgment. Final approval still stays with the merchant.",
+    text: "Safer defaults, checkout testing, persistent nudges, and optional admin guidance help the merchant move forward without Shopify replacing merchant judgment. Final approval still stays with the merchant.",
   },
 ] as const;
 

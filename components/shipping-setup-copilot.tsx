@@ -274,6 +274,17 @@ export function ShippingSetupCopilot() {
     window.localStorage.setItem(storageKey, JSON.stringify(state));
   }, [hydrated, state]);
 
+  useEffect(() => {
+    if (!hydrated || !stageRef.current) {
+      return;
+    }
+
+    stageRef.current.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, [hydrated, state.activeStep]);
+
   const activeSetting = useMemo(
     () => configureSettings.find((setting) => setting.id === state.configureFocus)!,
     [state.configureFocus]
@@ -282,12 +293,12 @@ export function ShippingSetupCopilot() {
   const completionCount = useMemo(
     () =>
       [
+        state.activeStep !== "diagnose" || state.approvedRecommendation,
         state.approvedRecommendation,
-        state.confirmedSettings.includes("weights"),
-        state.confirmedSettings.includes("package"),
         state.hasTestedRates,
+        state.activeStep === "resume",
       ].filter(Boolean).length,
-    [state.approvedRecommendation, state.confirmedSettings, state.hasTestedRates]
+    [state.activeStep, state.approvedRecommendation, state.hasTestedRates]
   );
 
   const completionPercent = useMemo(
@@ -551,7 +562,8 @@ export function ShippingSetupCopilot() {
                   <div>
                     <p className="text-sm font-medium text-ink">Completion state</p>
                     <p className="mt-1 text-sm leading-6 text-mutedInk">
-                      Merchant story, starting point, and testing proof all live on one screen.
+                      Diagnose, safer defaults, checkout proof, and the resume path all stay on
+                      one screen.
                     </p>
                   </div>
                   <div className="rounded-2xl border border-line bg-white px-3 py-2 text-right">
@@ -635,7 +647,7 @@ export function ShippingSetupCopilot() {
               className="prototype-grid prototype-glow flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8"
             >
               {state.activeStep === "diagnose" ? (
-                <div className="space-y-6">
+                <div className="space-y-6 pb-28 lg:pb-32">
               <div className="space-y-4" data-animate="stage">
                 <Badge variant="danger" className="w-fit px-3 py-1.5 text-[11px]">
                   Diagnose
@@ -646,9 +658,9 @@ export function ShippingSetupCopilot() {
                       </h2>
                       <p className="max-w-3xl text-base leading-7 text-mutedInk">
                         Shopify already offers the shipping tools. The problem is that small
-                        merchants may not know which missing detail across product data, packages,
-                        shipping settings, carrier setup, markets, or guidance is actually blocking
-                        trustworthy checkout rates.
+                        merchants may not know which missing detail across product weights,
+                        dimensions, packages, carrier setup, fulfillment timing, markets, or rate
+                        strategy is actually blocking trustworthy checkout rates.
                       </p>
                     </div>
                   </div>
@@ -699,20 +711,17 @@ export function ShippingSetupCopilot() {
                         </p>
                         <p>
                           A good rescue flow should narrow the problem before it sends the merchant
-                          deeper into scattered shipping settings, apps, or carrier setup.
+                          deeper into scattered shipping settings, apps, carrier setup, or rate
+                          strategy decisions.
                         </p>
                       </CardContent>
                     </Card>
                   </div>
 
                   <div
-                    className="sticky bottom-0 z-10 flex flex-wrap items-center justify-between gap-4 rounded-[24px] border border-line bg-white/96 px-4 py-4 backdrop-blur"
+                    className="sticky bottom-0 z-10 flex items-center justify-end rounded-[24px] border border-line bg-white/96 px-4 py-4 backdrop-blur"
                     data-animate="stage"
                   >
-                    <p className="max-w-2xl text-sm leading-6 text-mutedInk">
-                      The prototype intentionally stops at three blockers so the merchant sees a
-                      product story, not a dashboard.
-                    </p>
                     <Button size="lg" onClick={advanceFromDiagnose}>
                       Start guided setup
                       <ArrowRight className="ml-2 h-4 w-4" weight="bold" />
@@ -722,7 +731,7 @@ export function ShippingSetupCopilot() {
               ) : null}
 
               {state.activeStep === "recommend" ? (
-                <div className="space-y-6">
+                <div className="space-y-6 pb-28 lg:pb-32">
                   <div className="space-y-4" data-animate="stage">
                     <Badge variant="info" className="w-fit px-3 py-1.5 text-[11px]">
                       Recommend
@@ -732,10 +741,10 @@ export function ShippingSetupCopilot() {
                         Start with smart defaults from store signals.
                       </h2>
                       <p className="max-w-3xl text-base leading-7 text-mutedInk">
-                        This flow does not invent a new shipping product. It unifies existing
-                        Shopify shipping surfaces into one visible recommendation path, makes the
-                        reasoning clear, and waits for merchant approval before anything final is
-                        accepted.
+                        This flow does not invent a new shipping product. It pulls shipping
+                        settings, carrier or app setup, backup rates, packages, markets, and
+                        optional admin guidance into one visible recommendation path, then waits
+                        for merchant approval before anything final is accepted.
                       </p>
                     </div>
                   </div>
@@ -772,16 +781,20 @@ export function ShippingSetupCopilot() {
                     <div className="space-y-4">
                       <Card className="bg-[#f8faf8]" data-animate="stage">
                         <CardHeader>
-                          <CardDescription>Existing capabilities, clearer framing</CardDescription>
+                          <CardDescription>Existing Shopify pieces, unified here</CardDescription>
                           <CardTitle className="mt-2 text-xl tracking-[-0.03em]">
-                            Merchant approval stays explicit
+                            Merchant approval still stays explicit
                           </CardTitle>
                         </CardHeader>
-                        <CardContent className="text-sm leading-6 text-mutedInk">
-                          Smart defaults from store signals are a proposed starting point only.
-                          Shipping profiles, carrier-calculated rates, backup logic, packages,
-                          markets, and guidance already exist. This prototype makes them easier to
-                          understand and approve in one place.
+                        <CardContent className="space-y-3 text-sm leading-6 text-mutedInk">
+                          <p>
+                            Smart defaults from store signals are a proposed starting point only.
+                          </p>
+                          <p>
+                            Shipping settings, carrier-calculated rates, backup logic, carrier or
+                            app setup, markets, and Sidekick-style guidance already exist. This
+                            prototype makes them easier to understand and approve in one place.
+                          </p>
                         </CardContent>
                       </Card>
 
@@ -802,14 +815,9 @@ export function ShippingSetupCopilot() {
                   </div>
 
                   <div
-                    className="sticky bottom-0 z-10 flex flex-wrap items-center justify-between gap-4 rounded-[24px] border border-line bg-white/96 px-4 py-4 backdrop-blur"
+                    className="sticky bottom-0 z-10 flex items-center justify-end rounded-[24px] border border-line bg-white/96 px-4 py-4 backdrop-blur"
                     data-animate="stage"
                   >
-                    <p className="max-w-2xl text-sm leading-6 text-mutedInk">
-                      The prototype recommends local carriers first because the store ships from the
-                      US and already has multiple existing Shopify shipping options competing for the
-                      merchant's attention.
-                    </p>
                     <Button size="lg" onClick={approveStartingPoint}>
                       Approve starting point
                       <ArrowRight className="ml-2 h-4 w-4" weight="bold" />
@@ -819,7 +827,7 @@ export function ShippingSetupCopilot() {
               ) : null}
 
               {state.activeStep === "configure" ? (
-                <div className="space-y-6">
+                <div className="space-y-6 pb-28 lg:pb-32">
                   <div className="space-y-4" data-animate="stage">
                     <Badge variant="success" className="w-fit px-3 py-1.5 text-[11px]">
                       Configure
@@ -932,8 +940,13 @@ export function ShippingSetupCopilot() {
                             Reduce bad defaults before launch
                           </CardTitle>
                         </CardHeader>
-                        <CardContent className="text-sm leading-6 text-mutedInk">
-                          {activeSetting.whyItMatters}
+                        <CardContent className="space-y-3 text-sm leading-6 text-mutedInk">
+                          <p>{activeSetting.whyItMatters}</p>
+                          <p>
+                            The merchant still owns the final choice, but the rescue flow keeps
+                            the next safe setting visible instead of sending them back into a broad
+                            shipping menu.
+                          </p>
                         </CardContent>
                       </Card>
 
@@ -1129,17 +1142,9 @@ export function ShippingSetupCopilot() {
                   </Card>
 
                   <div
-                    className="sticky bottom-0 z-10 flex flex-wrap items-center justify-between gap-4 rounded-[24px] border border-line bg-white/96 px-4 py-4 backdrop-blur"
+                    className="sticky bottom-0 z-10 flex items-center justify-end rounded-[24px] border border-line bg-white/96 px-4 py-4 backdrop-blur"
                     data-animate="stage"
                   >
-                    <button
-                      type="button"
-                      onClick={previewResumeState}
-                      className="inline-flex items-center gap-2 text-sm font-medium text-mutedInk transition-colors hover:text-ink"
-                    >
-                      <ClockCounterClockwise className="h-4 w-4" weight="duotone" />
-                      Preview merchant leave and nudge
-                    </button>
                     <Button size="lg" onClick={testCheckoutRates}>
                       Test checkout rates
                       <ArrowRight className="ml-2 h-4 w-4" weight="bold" />
@@ -1149,7 +1154,7 @@ export function ShippingSetupCopilot() {
               ) : null}
 
               {state.activeStep === "resume" ? (
-                <div className="space-y-6">
+                <div className="space-y-6 pb-28 lg:pb-32">
                   <div className="space-y-4" data-animate="stage">
                     <Badge variant="info" className="w-fit px-3 py-1.5 text-[11px]">
                       Resume
@@ -1248,7 +1253,7 @@ export function ShippingSetupCopilot() {
                             paywalled because model and API costs can mount.
                           </p>
                           <p>
-                            It can draft safer settings or ask for a few missing details over time,
+                            It can ask for a few missing details over time or draft safer settings,
                             but the merchant still owns final approval.
                           </p>
                         </CardContent>
@@ -1264,6 +1269,10 @@ export function ShippingSetupCopilot() {
                             existing Shopify capabilities into one rescue flow without pretending
                             Shopify knows the business better than the merchant.
                           </p>
+                          <p>
+                            Safer defaults, checkout testing, persistent nudges, and merchant
+                            approval work together instead of showing up as scattered admin tasks.
+                          </p>
                           <div className="inline-flex items-center gap-2 rounded-2xl border border-line px-3 py-2 text-ink">
                             <GlobeHemisphereWest className="h-4 w-4 text-accent" weight="duotone" />
                             Safer defaults, persistent nudges, merchant approval always on
@@ -1274,13 +1283,9 @@ export function ShippingSetupCopilot() {
                   </div>
 
                   <div
-                    className="sticky bottom-0 z-10 flex flex-wrap items-center justify-between gap-4 rounded-[24px] border border-line bg-white/96 px-4 py-4 backdrop-blur"
+                    className="sticky bottom-0 z-10 flex items-center justify-end rounded-[24px] border border-line bg-white/96 px-4 py-4 backdrop-blur"
                     data-animate="stage"
                   >
-                    <p className="max-w-2xl text-sm leading-6 text-mutedInk">
-                      The resume state is the recovery story: keep the merchant accountable, but
-                      stop making them start over.
-                    </p>
                     <Button size="lg" onClick={resumeSetup}>
                       Resume setup
                       <ArrowRight className="ml-2 h-4 w-4" weight="bold" />
