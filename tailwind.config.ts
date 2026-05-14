@@ -10,14 +10,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: "#edf2ee",
+        canvas: "#f5f6f3",
         ink: "#17211b",
-        mutedInk: "#607168",
-        line: "#d8e0d9",
+        mutedInk: "#66736c",
+        line: "#dce3dd",
         surface: "#ffffff",
         accent: "#0b8a5f",
         accentStrong: "#076a48",
-        accentSoft: "#e7f4ed",
+        accentSoft: "#ecf6ef",
         paleBlue: "#ebf2ff",
         paleBlueInk: "#2557a6",
         paleGreen: "#e7f4ed",

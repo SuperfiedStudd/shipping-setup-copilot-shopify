@@ -20,7 +20,7 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
-  background: #edf2ee;
+  background: #f5f6f3;
   color: #17211b;
   font-family: var(--font-geist-sans), "Helvetica Neue", Arial, sans-serif;
   text-rendering: optimizeLegibility;
@@ -87,11 +87,11 @@ select {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.35;
   background:
-    radial-gradient(circle at 14% 16%, rgba(11, 138, 95, 0.07), transparent 24%),
-    radial-gradient(circle at 84% 18%, rgba(23, 33, 27, 0.03), transparent 18%),
-    radial-gradient(circle at 52% 84%, rgba(11, 138, 95, 0.04), transparent 24%);
+    radial-gradient(circle at 14% 16%, rgba(11, 138, 95, 0.04), transparent 24%),
+    radial-gradient(circle at 84% 18%, rgba(23, 33, 27, 0.02), transparent 18%),
+    radial-gradient(circle at 52% 84%, rgba(11, 138, 95, 0.025), transparent 24%);
 }
 
 .prototype-grid {
