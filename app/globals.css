@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --font-geist-sans: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-geist-mono: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  --font-newsreader: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: #edf2ee;
+  color: #17211b;
+  font-family: var(--font-geist-sans), "Helvetica Neue", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(11, 138, 95, 0.18);
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -48px;
+  z-index: 60;
+  border: 1px solid rgba(23, 33, 27, 0.08);
+  background: #ffffff;
+  color: #17211b;
+  padding: 10px 14px;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
+.balance-lines {
+  text-wrap: balance;
+}
+
+.pretty-lines {
+  text-wrap: pretty;
+}
+
+.fine-grid {
+  background-image:
+    linear-gradient(rgba(23, 23, 23, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 23, 23, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.grain-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.08) 0.6px, transparent 0.8px);
+  background-size: 12px 12px;
+}
+
+.ambient-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.8;
+  background:
+    radial-gradient(circle at 14% 16%, rgba(11, 138, 95, 0.07), transparent 24%),
+    radial-gradient(circle at 84% 18%, rgba(23, 33, 27, 0.03), transparent 18%),
+    radial-gradient(circle at 52% 84%, rgba(11, 138, 95, 0.04), transparent 24%);
+}
+
+.prototype-grid {
+  background-image:
+    linear-gradient(rgba(23, 33, 27, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 33, 27, 0.04) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.prototype-glow {
+  background:
+    radial-gradient(circle at top left, rgba(11, 138, 95, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 1));
+}
