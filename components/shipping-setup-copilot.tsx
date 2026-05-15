@@ -15,6 +15,8 @@ import {
 
 import {
   blockerSequence,
+  cartPresetOrder,
+  cartPresets,
   diagnoseFields,
   defaultState,
   phaseRail,
@@ -26,6 +28,7 @@ import {
   storageKey,
   storeSignals,
   storyRail,
+  type CartPresetId,
   type DemoState,
   type PresetId,
   type PromptId,
@@ -42,6 +45,10 @@ function isStepId(value: unknown): value is StepId {
 
 function isPromptId(value: unknown): value is PromptId {
   return promptOrder.includes(value as PromptId);
+}
+
+function isCartPresetId(value: unknown): value is CartPresetId {
+  return cartPresetOrder.includes(value as CartPresetId);
 }
 
 function isPresetId(value: unknown): value is PresetId {
@@ -69,6 +76,9 @@ function readStoredState() {
         parsed.blockerIndex < blockerSequence.length
           ? parsed.blockerIndex
           : defaultState.blockerIndex,
+      selectedCartPreset: isCartPresetId(parsed.selectedCartPreset)
+        ? parsed.selectedCartPreset
+        : defaultState.selectedCartPreset,
       selectedPrompt: isPromptId(parsed.selectedPrompt)
         ? parsed.selectedPrompt
         : defaultState.selectedPrompt,
@@ -157,6 +167,11 @@ export function ShippingSetupCopilot() {
   const selectedPreset = useMemo(
     () => presets.find((preset) => preset.id === state.selectedPreset) ?? presets[0],
     [state.selectedPreset]
+  );
+
+  const selectedCartPreset = useMemo(
+    () => cartPresets.find((cart) => cart.id === state.selectedCartPreset) ?? cartPresets[0],
+    [state.selectedCartPreset]
   );
 
   const currentStepIndex = useMemo(
@@ -375,7 +390,7 @@ export function ShippingSetupCopilot() {
               </div>
 
               <div className="mt-3 rounded-[16px] border border-white/80 bg-white p-3.5">
-                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_170px] sm:items-start">
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_220px] sm:items-start">
                   <div className="min-w-0 max-w-[32ch]">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accentStrong">
                       {phaseRail[currentStepIndex]?.label ?? "Diagnose"}
@@ -396,6 +411,64 @@ export function ShippingSetupCopilot() {
                     <p className="mt-2 max-w-[16ch] text-sm font-medium leading-5 text-ink">
                       {currentBlocker.status}
                     </p>
+
+                    <div
+                      aria-label="Preset cart shipping check"
+                      className="mt-3 space-y-2"
+                      role="radiogroup"
+                    >
+                      {cartPresets.map((cart) => {
+                        const active = cart.id === state.selectedCartPreset;
+
+                        return (
+                          <label
+                            key={cart.id}
+                            className={cn(
+                              "flex cursor-pointer items-start gap-2 rounded-[12px] border px-3 py-2.5 transition-colors",
+                              active
+                                ? "border-accent bg-white"
+                                : "border-line bg-white/70 hover:border-[#bfd2c5]"
+                            )}
+                          >
+                            <input
+                              checked={active}
+                              className="mt-0.5 h-4 w-4 accent-[#315f51]"
+                              name="preset-cart-check"
+                              onChange={() =>
+                                setState((current) => ({
+                                  ...current,
+                                  selectedCartPreset: cart.id,
+                                }))
+                              }
+                              type="radio"
+                            />
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium text-ink">{cart.label}</p>
+                              <p className="mt-1 text-xs leading-5 text-mutedInk">
+                                {cart.example}
+                              </p>
+                              <p className="mt-1 text-xs leading-5 text-mutedInk">
+                                Cart total ${cart.subtotal} / Shipping ${cart.shipping}
+                              </p>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+
+                    <div className="mt-3 rounded-[12px] border border-line bg-white px-3 py-2.5">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-mutedInk">
+                        Cart total with shipping
+                      </p>
+                      <div className="mt-2 space-y-1 text-sm leading-5 text-ink">
+                        <p>Cart subtotal: ${selectedCartPreset.subtotal}</p>
+                        <p>Shipping: ${selectedCartPreset.shipping}</p>
+                        <p className="font-medium">
+                          Customer pays: $
+                          {selectedCartPreset.subtotal + selectedCartPreset.shipping}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

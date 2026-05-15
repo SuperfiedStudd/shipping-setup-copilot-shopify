@@ -4,6 +4,8 @@ export type PromptId =
   | "review-package-details"
   | "check-default-rate";
 
+export type CartPresetId = "small-cart" | "bulky-cart";
+
 export type PresetId =
   | "small-soft-goods"
   | "fragile-home-decor"
@@ -12,6 +14,7 @@ export type PresetId =
 export type DemoState = {
   activeStep: StepId;
   blockerIndex: number;
+  selectedCartPreset: CartPresetId;
   selectedPrompt: PromptId;
   selectedPreset: PresetId;
 };
@@ -25,6 +28,8 @@ export const promptOrder: PromptId[] = [
   "check-default-rate",
 ];
 
+export const cartPresetOrder: CartPresetId[] = ["small-cart", "bulky-cart"];
+
 export const presetOrder: PresetId[] = [
   "small-soft-goods",
   "fragile-home-decor",
@@ -34,6 +39,7 @@ export const presetOrder: PresetId[] = [
 export const defaultState: DemoState = {
   activeStep: "diagnose",
   blockerIndex: 0,
+  selectedCartPreset: "small-cart",
   selectedPrompt: "review-package-details",
   selectedPreset: "fragile-home-decor",
 };
@@ -138,6 +144,23 @@ export const diagnoseFields = [
   {
     label: "Fulfillment time",
     value: "1-2 business days",
+  },
+] as const;
+
+export const cartPresets = [
+  {
+    id: "small-cart" as const,
+    label: "Small cart",
+    example: "1 lightweight item",
+    subtotal: 48,
+    shipping: 8,
+  },
+  {
+    id: "bulky-cart" as const,
+    label: "Bulky cart",
+    example: "1 fragile or oversized item",
+    subtotal: 128,
+    shipping: 24,
   },
 ] as const;
 
