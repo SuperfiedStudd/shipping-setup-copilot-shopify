@@ -280,6 +280,7 @@ export function ShippingSetupCopilot() {
               </p>
               <div className="rounded-[14px] border border-line bg-[#f8faf8] px-4 py-3">
                 <p className="text-sm font-medium text-ink">Shopify APM prototype</p>
+                <p className="mt-1 text-sm font-medium text-accentStrong">Jasjyot Singh</p>
                 <p className="mt-1 text-sm leading-6 text-mutedInk">
                   One screen that keeps incomplete shipping setup moving toward merchant approval.
                 </p>
